@@ -1,0 +1,56 @@
+import { Container } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+
+import ProductsView from './parts/products'
+import ListView from './parts/list'
+
+
+import DeleteDialog from '../../components/modal/DeleteDialog';
+
+import CreateProductModal from '../../components/modal/CreateProductModal';
+import EditProductModal from '../../components/modal/EditProductModal';
+import CreateVariantModal from '../../components/modal/CreateVariantModal'
+import EditVariantModal from '../../components/modal/EditVariantModal'
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+
+
+function Home() {
+
+  return (
+    <Container sx={{ pt:3 }}  style={{minHeight:"80vh"}} dark>
+       
+       <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={5}>
+            <Grid item md={6} xs={12}>
+              <Item>
+                <ProductsView />
+              </Item>
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <Item>
+                <ListView />
+              </Item>
+            </Grid>
+          </Grid>
+        </Box>
+
+        <DeleteDialog />
+        <EditProductModal />
+        <CreateProductModal />
+        <CreateVariantModal /> 
+        <EditVariantModal />
+    </Container>
+  );
+}
+
+export default Home;
