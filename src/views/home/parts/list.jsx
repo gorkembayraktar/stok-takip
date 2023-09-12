@@ -31,7 +31,8 @@ import { useSelector } from 'react-redux';
 
 import {
     setCreatelistModal,
-    setDeleteDialog
+    setDeleteDialog,
+    setEditListModal
 } from '../../../utils'
 
 import {
@@ -60,7 +61,17 @@ function ListViewContainer(){
             method: 'list'
         });
     }
-
+    const editGroup = (data) => {
+        console.log({
+            show: true,
+            selected: Object.assign({}, data)
+        });
+ 
+        setEditListModal({
+            show: true,
+            selected: Object.assign({}, data)
+        })
+    }
     return (
         <List
             sx={{ width: '100%', bgcolor: 'background.paper' }}
@@ -84,7 +95,7 @@ function ListViewContainer(){
                                     disableGutters
                                     secondaryAction={
                                         <>
-                                            <IconButton aria-label="edit" size="small">
+                                            <IconButton aria-label="edit" size="small" onClick={() => editGroup(item)}>
                                                     <EditIcon size="small" />
                                             </IconButton>
                                             <IconButton aria-label="delete"  size="small" onClick={() => deleteGroup(item.id) }>

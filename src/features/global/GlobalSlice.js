@@ -71,6 +71,10 @@ const initialState = {
    },
    createlistModal: {
       show: false
+   },
+   editlistModal:{
+     show: false,
+     selected: null
    }
 };
 
@@ -187,6 +191,20 @@ export const globalSlice = createSlice({
         }
       ];
       state.createlistModal.show = false;
+    },
+    setEditListModal: (state, action) => {
+      state.editlistModal.show = action.payload.show ?? false;
+      state.editlistModal.selected = action.payload.selected;
+    },
+    editListItem: (state, action) => {
+      const find = state.list.find(i => i.id == action.payload.id);
+      console.log("find", find)
+      if(find){
+        find.title = action.payload.title;
+        find.items = action.payload.items;
+      }
+      state.editlistModal.show = false;
+      state.editlistModal.selected = null;
     }
   },
 });
@@ -204,7 +222,9 @@ export const { setDeleteDialog,
   editVariantItem,
   setCreatelistModal,
   deleteListItem,
-  addListItem
+  addListItem,
+  editListItem,
+  setEditListModal
  } = globalSlice.actions;
 
 export const showDeleteDialog = (state) => state.global.deleteDialogProps.show;
@@ -214,7 +234,7 @@ export const showEditProductModal = (state) => state.global.editProductModal;
 
 export const showCreateProductModal = (state) => state.global.showCreateProductModal;
 export const showCreatelistModal = (state) => state.global.createlistModal;
-
+export const showEditlistModal = (state) => state.global.editlistModal;
 
 
 export const showCreteVariantModal = (state) => state.global.creteVariantModal;

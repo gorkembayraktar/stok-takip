@@ -15,7 +15,9 @@ import {
     editVariantItem as editVariantItemFunc,
     setCreatelistModal as setCreatelistModalFunc,
     deleteListItem as deleteListItemFunc,
-    addListItem as addListItemFunc
+    addListItem as addListItemFunc,
+    editListItem as editListItemFunc,
+    setEditListModal as setEditListModalFunc
 } from './features/global/GlobalSlice'
 
 export const setDeleteDialog = ( state ) => {
@@ -74,5 +76,12 @@ export const deleteListItem = (state) => {
 }
 export const addListItem = (state) => {
     store.dispatch( addListItemFunc(state) );
+}
+
+export const editListItem = (state) => {
+    store.dispatch( editListItemFunc(state) );
+}
+export const setEditListModal = (state) => {
+    store.dispatch( setEditListModalFunc(state) );
 }
 

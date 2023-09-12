@@ -22,12 +22,14 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useSelector } from 'react-redux';
 import {
   getProducts,
-  showCreatelistModal
+  getList,
+  showEditlistModal
 } from '../../features/global/GlobalSlice'
 
 import {
-  setCreatelistModal,
-  addListItem
+
+  setEditListModal,
+  editListItem
 } from '../../utils'
 
 
@@ -39,8 +41,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-let once = false;
-
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
@@ -48,34 +48,44 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+let once = false;
 
 export default function CreateListModal() {
-  const {show: open} = useSelector(showCreatelistModal);
+  const {show: open, selected} = useSelector(showEditlistModal);
 
   const [ listName, setListName ] = React.useState('')
- 
+
   const productsStore = useSelector(getProducts)
+
+  const list = useSelector(getList)
 
   const [products, setProducts] = React.useState([]);
 
-
-  React.useEffect(()=>{
-    initData();
+  React.useEffect(() => {
+    initData()
   }, [productsStore])
 
-  React.useEffect(()=>{
-    initData(true);
+  React.useEffect(() => {
+    initData(true)
   }, [open])
 
+  React.useEffect(() => {
+    if(selected){{
+        setListName(selected.title)
+    }}
+  },[selected])
+ 
+
   const handleClose = () => {
-    setCreatelistModal({show: false});
+    setEditListModal({show: false});
   };
 
-  const handleCreate = () => {
+  const handleEdit = () => {
     if(listName.length == 0) return;
     if(products.filter((p) => p.variants.some(k => k.checked)).length == 0) return;
 
-    addListItem({
+    editListItem({
+      id: selected.id,
       title: listName,
       items: products.filter((p) => p.variants.some(k => k.checked))
              .map(item =>(
@@ -88,16 +98,11 @@ export default function CreateListModal() {
               }
         ))
     })
-
-    initData();
-    setListName('')
-   
   }
 
   const handleDelete = (parent_id, id) => {
     checkboxToggle(parent_id, id)
   };
-
 
   const checkboxToggle = (parent_id, id) => {
     const p = products.find(i =>  i.id == parent_id);
@@ -112,23 +117,30 @@ export default function CreateListModal() {
     v.total = Math.max(total, 0);
     setProducts([...products]);
   }
-
+  
  
 
   const initData = (refresh = false) => {
-    if(productsStore && productsStore.length && (!once || refresh )){
-      console.log('çalışıt')
+  
+    if(productsStore && productsStore.length && selected != null && (!once || refresh) ){
+      console.log('çalışı')
       setProducts(
          productsStore
          .map(product => ({
            ...product,
-           variants: product.variants.map(variant => ({...variant, checked: false, total: 1}))
+           variants: product.variants.map(variant => ({
+            ...variant, 
+            checked: selected.items.find(i => i.product.id == product.id && i.variants.some(v => v.id == variant.id)) && true, 
+            total: selected.items.find(i => i.product.id == product.id)?.variants.find(v => v.id === variant.id)?.total ?? 0
+          }))
          }))
        );
-
        once = true;
      }
+    
   }
+    
+
 
   return (
     <div>
@@ -149,7 +161,7 @@ export default function CreateListModal() {
               <CloseIcon />
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-              Liste Oluştur
+              Liste Güncelle
             </Typography>
             <TextField
                   size="small"
@@ -159,8 +171,8 @@ export default function CreateListModal() {
                   value={listName}
                   sx={{mr:2}}
               />
-            <Button autoFocus color="success" variant="contained" onClick={ handleCreate }>
-              Oluştur
+            <Button autoFocus color="success" variant="contained" onClick={ handleEdit }>
+              Güncelle
             </Button>
           </Toolbar>
         </AppBar>
@@ -204,7 +216,7 @@ export default function CreateListModal() {
   );
 }
 
-function ProductListCustomize({products, setProducts, totalChange, checkboxToggle}){
+function ProductListCustomize({products,  totalChange, checkboxToggle}){
 
 
  
@@ -228,8 +240,7 @@ function ProductListCustomize({products, setProducts, totalChange, checkboxToggl
 }
 
 function ProductListItem({data, toggle, totalChange}){
-  
-  console.log(data)
+
   return (
     <>
     <ListItem
