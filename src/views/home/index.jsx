@@ -14,6 +14,8 @@ import CreateProductModal from '../../components/modal/CreateProductModal';
 import EditProductModal from '../../components/modal/EditProductModal';
 import CreateVariantModal from '../../components/modal/CreateVariantModal'
 import EditVariantModal from '../../components/modal/EditVariantModal'
+import CreateListModal from '../../components/modal/CreateListModal'
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -31,12 +33,12 @@ function Home() {
        
        <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={5}>
-            <Grid item md={6} xs={12}>
+            <Grid item md={4} xs={12}>
               <Item>
                 <ProductsView />
               </Item>
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item md={8} xs={12}>
               <Item>
                 <ListView />
               </Item>
@@ -49,6 +51,7 @@ function Home() {
         <CreateProductModal />
         <CreateVariantModal /> 
         <EditVariantModal />
+        <CreateListModal /> 
     </Container>
   );
 }

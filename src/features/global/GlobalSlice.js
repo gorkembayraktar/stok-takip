@@ -13,8 +13,38 @@ const initialState = {
           },
           {
             id: 102,
-            title: 'Variant 1',
-            stock: 100
+            title: 'Variant 2',
+            stock: 225
+          }
+        ]
+      },{
+        id: 2,
+        title: 'Ürün Adı 2',
+        variants: []
+      }
+   ],
+   list:[
+      {
+        id:1,
+        title: 'Liste 1',
+        items: [
+          {
+            product:{
+              id: 1,
+              title: 'Ürün Adı 1',
+            },
+            variants:[
+              {
+                id: 101,
+                title: 'Variant 1',
+                total: 2
+              },
+              {
+                id: 102,
+                title: 'Variant 2',
+                total: 3
+              }
+            ]
           }
         ]
       }
@@ -38,6 +68,9 @@ const initialState = {
    editVariantModal: {
       show: true,
       selected: null
+   },
+   createlistModal: {
+      show: false
    }
 };
 
@@ -71,13 +104,16 @@ export const globalSlice = createSlice({
       console.log("silindi deleteDialogHandle");
     },
     addProductItem: (state, action) => {
+  
       state.products = [
         ...state.products,
         {
           id: Date.now(),
-          title: action.payload.title
+          title: action.payload.title,
+          variants: []        
         }
       ];
+      
       state.showCreateProductModal = false;
     },
     setEditProductModal: (state, action) => {
@@ -95,7 +131,6 @@ export const globalSlice = createSlice({
           variant.title = action.payload.title;
           variant.stock = action.payload.stock;
        } 
-     
     },
     editProductItem: (state, action) => {
       const item = state.products.find( p => p.id == action.payload.id );
@@ -134,6 +169,24 @@ export const globalSlice = createSlice({
       }
       state.deleteDialogProps.show = false;
 
+    },
+    setCreatelistModal: (state, action) =>{
+        state.createlistModal.show = action.payload.show ?? false;
+    },
+    deleteListItem: (state, action) => {
+      state.list = state.list.filter(i => i.id !== action.payload.id);
+      state.deleteDialogProps.show = false;
+    },
+    addListItem: (state, action) => {
+      state.list = [
+        ...state.list,
+        {
+          id:Date.now(),
+          title: action.payload.title,
+          items: action.payload.items
+        }
+      ];
+      state.createlistModal.show = false;
     }
   },
 });
@@ -148,7 +201,10 @@ export const { setDeleteDialog,
   setCreateVariantModal,
   addVariantItem,
   setEditVariantModal,
-  editVariantItem
+  editVariantItem,
+  setCreatelistModal,
+  deleteListItem,
+  addListItem
  } = globalSlice.actions;
 
 export const showDeleteDialog = (state) => state.global.deleteDialogProps.show;
@@ -157,11 +213,16 @@ export const deleteDialogProps = (state) => state.global.deleteDialogProps;
 export const showEditProductModal = (state) => state.global.editProductModal;
 
 export const showCreateProductModal = (state) => state.global.showCreateProductModal;
+export const showCreatelistModal = (state) => state.global.createlistModal;
+
 
 
 export const showCreteVariantModal = (state) => state.global.creteVariantModal;
 export const showEditVariantModal = (state) => state.global.editVariantModal;
 
 export const getProducts = (state) => state.global.products;
+
+
+export const getList = (state) => state.global.list;
 
 export default globalSlice.reducer;

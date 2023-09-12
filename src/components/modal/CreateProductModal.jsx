@@ -39,6 +39,7 @@ export default function CreateProductModal() {
     const handleClose = () => setCreateProductModal(false);
 
     const create = () => {
+    
         addProductItem({
             title: value
         });

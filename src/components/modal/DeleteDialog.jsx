@@ -13,7 +13,8 @@ import {
 import {
   setDeleteDialog,
   deleteDialogHandle,
-  deleteVariantHandle
+  deleteVariantHandle,
+  deleteListItem
 } from '../../utils'
 
 
@@ -25,6 +26,33 @@ export default function DeleteDialog(){
       setDeleteDialog({show: false});
     };
 
+
+
+    const switchMethod = () => {
+      switch( method ){
+        case 'product':
+          return (
+            <Button onClick={() => deleteDialogHandle( selected.id ) } autoFocus>
+              Sil
+            </Button>
+          );
+        break;
+
+        case 'variant':
+          return (
+            <Button onClick={() => deleteVariantHandle( {product_id: selected.product_id, id: selected.id }) } autoFocus>
+              Sil
+            </Button>
+          );
+        
+        case 'list':
+          return (
+            <Button onClick={() => deleteListItem({id: selected.id}) } autoFocus>
+              Sil
+            </Button>
+          )
+      }
+    }
 
     return (
       <div>
@@ -45,16 +73,7 @@ export default function DeleteDialog(){
           <DialogActions>
             <Button onClick={handleClose}>Vazgeç</Button>
 
-            { method == 'product' && 
-            <Button onClick={() => deleteDialogHandle( selected.id ) } autoFocus>
-              Sil
-            </Button>
-            }
-            { method == 'variant' && 
-            <Button onClick={() => deleteVariantHandle( {product_id: selected.product_id, id: selected.id }) } autoFocus>
-              Sil
-            </Button>
-            }
+            { switchMethod() }
           </DialogActions>
         </Dialog>
       </div>

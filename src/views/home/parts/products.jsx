@@ -141,7 +141,7 @@ const ProductItem = ({ data }) => {
 
     
     return <>
-      <ListItem>
+      <ListItem dense>
                 <ListItemIcon sx={{ mr: 1}}>
                     <IconButton edge="end" aria-label="more actions" onClick={handleClickDot} >
                         <MoreVertIcon />
