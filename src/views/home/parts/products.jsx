@@ -18,14 +18,14 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import Chip from '@mui/material/Chip';
-
+import SearchIcon from '@mui/icons-material/Search';
 import Typography from '@mui/material/Typography';
 
 import EditIcon from '@mui/icons-material/Edit';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Divider } from '@mui/material';
+import { Alert, Divider, InputAdornment, TextField } from '@mui/material';
 
 import { useSelector } from 'react-redux';
 
@@ -46,6 +46,27 @@ const ITEM_HEIGHT = 48;
 function Products(){
     const products = useSelector(getProducts)
 
+    const [search, setSearch] = React.useState('');
+    const [filterProducsts, setFilterProducsts] = React.useState([]);
+
+    React.useEffect(()=>{
+        //filtrele
+        if(search.length == 0){
+            setFilterProducsts([...products])
+            return;
+        }
+        setFilterProducsts(
+            products.filter(p => 
+                p.title.toLocaleLowerCase().includes(search.toLocaleLowerCase()) || 
+                (p.variants && p.variants.some(v => v.title.toLocaleLowerCase().includes(search.toLowerCase())))  
+            ).map(p =>({
+                ...p,
+                variants: p.variants.filter( v => v.title.toLocaleLowerCase().includes(search.toLowerCase()))
+            }))
+        )
+        
+    },[search]);
+
     const openCreateProductModal = () => {
         setCreateProductModal(true)
     }
@@ -56,17 +77,39 @@ function Products(){
             component="nav"
             aria-labelledby="nested-list-subheader"
             subheader={
-                <ListSubheader component="div" id="nested-list-subheader" sx={{ fontWeight: 'bold'}}>
-                   Ürünler
-                   <IconButton edge="end" aria-label="new product" sx={{ float: 'right'}} onClick={openCreateProductModal}>
+                <ListSubheader component="div" id="nested-list-subheader" sx={{ fontWeight: 'bold', textAlign:'left'}}>
+                    <IconButton edge="end" aria-label="new product" sx={{ float: 'left'}} onClick={openCreateProductModal}>
                         <AddIcon />
                     </IconButton>
+                   <span style={{marginLeft: 10}}>
+                        Ürünler
+                    </span>
+                    <TextField
+                        required
+                        variant="outlined"
+                        id="outlined-required"
+                        size='small'
+                        InputProps={{ 
+                            sx: { height: 30 } ,
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                  <SearchIcon />
+                                </InputAdornment>
+                            ),
+                        
+                        }}
+                        style={{display: 'inline-block'}}
+                        sx={{maxWidth:160, float:'right'}}
+                        value= {search}
+                        onChange={ (e) => setSearch(e.target.value) }
+                        />
                 </ListSubheader>
             }
+       
             >
-        
+            { filterProducsts.length == 0 && <Alert severity="info">Ürün Bulunmuyor</Alert>}
             {
-            products.map( product =>  <ProductItem key={product.id} data={product} />)
+            filterProducsts.map( product =>  <ProductItem key={product.id} data={product} />)
           }
           
         </List>
@@ -141,7 +184,7 @@ const ProductItem = ({ data }) => {
 
     
     return <>
-      <ListItem dense>
+      <ListItem dense >
                 <ListItemIcon sx={{ mr: 1}}>
                     <IconButton edge="end" aria-label="more actions" onClick={handleClickDot} >
                         <MoreVertIcon />
@@ -205,7 +248,8 @@ const ProductItem = ({ data }) => {
             {
                 data.variants && data.variants.length > 0 &&
                 <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
+                    <List component="div" disablePadding dense 
+            style={{maxHeight: 200, overflow: 'auto'}}>
                         {
                             data.variants.map(variant => ( 
                                 <ListItemButton sx={{ pl: 4 }}>
