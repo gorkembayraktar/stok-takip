@@ -105,16 +105,30 @@ export default function CreateListModal() {
   };
 
   const checkboxToggle = (parent_id, id) => {
+    
     const p = products.find(i =>  i.id == parent_id);
-    const v = p.variants.find(i => i.id == id );
-    v.checked = !v.checked;
+    if(p){
+      const v = p.variants.find(i => i.id == id );
+      if(v){
+        v.checked = !v.checked;
+      }
+    }
     setProducts([...products]);
   }
 
   const totalChange = (parent_id, id, total) => {
+   
+    //
     const p = products.find(i =>  i.id == parent_id);
-    const v = p.variants.find(i => i.id == id );
-    v.total = Math.max(total, 0);
+    if(p){
+      const v = p.variants.find(i => i.id == id );
+      if(v){
+        v.total = Math.max(total, 0);
+
+        v.checked = v.total > 0;
+
+      }
+    }
     setProducts([...products]);
   }
   
@@ -130,7 +144,7 @@ export default function CreateListModal() {
            ...product,
            variants: product.variants.map(variant => ({
             ...variant, 
-            checked: selected.items.find(i => i.product.id == product.id && i.variants.some(v => v.id == variant.id)) && true, 
+            checked: !!selected.items.find(i => i.product.id == product.id && i.variants.some(v => v.id == variant.id)) ?? false, 
             total: selected.items.find(i => i.product.id == product.id)?.variants.find(v => v.id === variant.id)?.total ?? 0
           }))
          }))
@@ -193,7 +207,11 @@ export default function CreateListModal() {
                     .map(p => (
                       <>
                          <ListItemText id={0} primary={p.title} />
-                          <Stack direction="row" spacing={1}>
+                          <Stack 
+                          direction="row" 
+                          spacing={1}
+                          sx={{ display: 'flex',flexWrap: 'wrap', justifyContent:'center', gap: 1 }}
+                          >
                             {
                               p.variants &&
                               p.variants.filter(v => v.checked).map(variant =>(
@@ -228,6 +246,7 @@ function ProductListCustomize({products,  totalChange, checkboxToggle}){
             Ürünler
           </ListSubheader>
       }
+      dense
       >   
       {
         products &&
@@ -260,7 +279,7 @@ function ProductListItem({data, toggle, totalChange}){
       
     
     </ListItem>
-    <List component="div" disablePadding dense>
+    <List component="div" disablePadding dense  style={{maxHeight: 200, overflow: 'auto'}}>
       {
         data.variants && 
         data.variants.map(variant => (
@@ -304,7 +323,7 @@ function ProductListItem({data, toggle, totalChange}){
                       inputProps={{ 'aria-labelledby': 0 }}
                     />
                 </ListItemIcon>
-                <ListItemText primary={variant.title} />
+                <ListItemText primary={`${variant.title} (${variant.stock})`} id={variant.id} />
               
             </ListItemButton>
           </ListItem> 

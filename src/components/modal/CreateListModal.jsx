@@ -125,7 +125,6 @@ export default function CreateListModal() {
            variants: product.variants.map(variant => ({...variant, checked: false, total: 1}))
          }))
        );
-
        once = true;
      }
   }
@@ -181,11 +180,14 @@ export default function CreateListModal() {
                     .map(p => (
                       <>
                          <ListItemText id={0} primary={p.title} />
-                          <Stack direction="row" spacing={1}>
+                 
+                          <Stack direction="row" spacing={1} sx={{ display: 'flex',flexWrap: 'wrap', justifyContent:'center', gap: 1 }}>
                             {
                               p.variants &&
                               p.variants.filter(v => v.checked).map(variant =>(
-                                <Chip label={`${variant.title} (${variant.total})`} onDelete={() => handleDelete(p.id, variant.id)} />
+                                
+                                <Chip label={`${variant.title} (${variant.total})`} onDelete={() => handleDelete(p.id, variant.id)} size="small"/>
+                               
                               ))
                             }
                           </Stack>
@@ -216,6 +218,7 @@ function ProductListCustomize({products, setProducts, totalChange, checkboxToggl
             Ürünler
           </ListSubheader>
       }
+     
       >   
       {
         products &&
@@ -229,14 +232,12 @@ function ProductListCustomize({products, setProducts, totalChange, checkboxToggl
 
 function ProductListItem({data, toggle, totalChange}){
   
-  console.log(data)
+
   return (
     <>
     <ListItem
       secondaryAction={
-        <IconButton edge="end" aria-label="comments">
-          
-        </IconButton>
+        <Chip label={ data.variants && data.variants.reduce((acc, i) => acc + i.stock, 0) } />
       }
       disablePadding
     >
@@ -244,12 +245,12 @@ function ProductListItem({data, toggle, totalChange}){
         <ListItemIcon>
         
         </ListItemIcon>
-        <ListItemText id={data.id} primary={data.title} />
+        <ListItemText id={data.id} primary={`${data.title}`} />
       </ListItemButton>
       
     
     </ListItem>
-    <List component="div" disablePadding dense>
+    <List component="div" disablePadding dense  style={{maxHeight: 200, overflow: 'auto'}}>
       {
         data.variants && 
         data.variants.map(variant => (
@@ -293,7 +294,7 @@ function ProductListItem({data, toggle, totalChange}){
                       inputProps={{ 'aria-labelledby': 0 }}
                     />
                 </ListItemIcon>
-                <ListItemText primary={variant.title} />
+                <ListItemText primary={`${variant.title} (${variant.stock})`} onClick={(e) => toggle(data.id, variant.id)} />
               
             </ListItemButton>
           </ListItem> 
