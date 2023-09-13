@@ -26,7 +26,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Alert, AlertTitle, Box, Divider, Grid } from '@mui/material';
-
+import CalculateIcon from '@mui/icons-material/Calculate';
 import { useSelector } from 'react-redux';
 
 import {
@@ -46,10 +46,36 @@ import Paper from '@mui/material/Paper';
 const ITEM_HEIGHT = 48;
 
 function ListViewContainer(){
-    const list = useSelector(getList)
+    const listStore = useSelector(getList)
+
+    const [list, setList] = React.useState([]);
+
+    React.useEffect(()=>{
+        if(listStore){
+            setList(
+                listStore.map(k => ({
+                    ...k,
+                    selected: false
+                }))
+            )
+        }
+    },[listStore])
+
+    const setSelected = (item) => {
+        console.log()
+        setList(
+            list.map(k => ({
+                ...k,
+                selected: item.id == k.id ? !k.selected : k.selected 
+            }))
+        )
+    }
 
     const openCreateListModal = () => {
         setCreatelistModal({show: true});
+    }
+    const openCalculateModal = () => {
+        
     }
     const deleteGroup = (id) => {
         setDeleteDialog({
@@ -79,6 +105,13 @@ function ListViewContainer(){
             aria-labelledby="nested-list-subheader"
             subheader={
                 <ListSubheader component="div" id="nested-list-subheader" sx={{ fontWeight: 'bold'}}>
+                    {
+                      list.some(i => i.selected) &&
+                        <IconButton edge="start" aria-label="calculate" sx={{ float: 'left'}} onClick={openCalculateModal}>
+                            <CalculateIcon />
+                        </IconButton>
+                    }
+                   
                    Listeler
                    <IconButton edge="end" aria-label="new product" sx={{ float: 'right'}} onClick={openCreateListModal}>
                         <AddIcon />
@@ -86,23 +119,28 @@ function ListViewContainer(){
                 </ListSubheader>
             }
             >
+
+            { list.length == 0 && <Alert severity="info">Liste Bulunmuyor</Alert>}
             <Grid container spacing={1} sx={{p:2}}>
                 {
                     list.map((item, i) => (
                         <Grid key={i} item md={4} sm={6} xs={12} >
-                            <Paper sx={{p:2}}>
+                            <Paper sx={{p:2}}  style={{background: item.selected ? '#4f794c' : '', cursor: 'pointer'}}
+                            onClick={ () => setSelected(item) }
+                            >
                             <ListItem dense
                                     disableGutters
                                     secondaryAction={
                                         <>
-                                            <IconButton aria-label="edit" size="small" onClick={() => editGroup(item)}>
+                                            <IconButton aria-label="edit" size="small" onClick={(e) => (e.stopPropagation(), editGroup(item))}>
                                                     <EditIcon size="small" />
                                             </IconButton>
-                                            <IconButton aria-label="delete"  size="small" onClick={() => deleteGroup(item.id) }>
+                                            <IconButton aria-label="delete"  size="small" onClick={(e) => (e.stopPropagation(), deleteGroup(item.id)) }>
                                                 <DeleteIcon size="small"/>
                                             </IconButton>
                                         </>
                                     }
+                                    
                                     >
                                 <ListItemText 
                                 noWrap 

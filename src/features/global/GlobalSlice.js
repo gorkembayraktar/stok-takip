@@ -5,18 +5,11 @@ const initialState = {
       {
         id: 1,
         title: 'Ürün Adı 1',
-        variants: [
-          {
-            id: 101,
-            title: 'Variant 1',
-            stock: 100
-          },
-          {
-            id: 102,
-            title: 'Variant 2',
-            stock: 225
-          }
-        ]
+        variants: [...Array(24)].map( (k,i) =>({
+            id: 101  +i ,
+            title: 'Variant ' + (i+1),
+            stock: Math.ceil(Math.random() * 50)
+          })),
       },{
         id: 2,
         title: 'Ürün Adı 2',
@@ -74,6 +67,10 @@ const initialState = {
    },
    editlistModal:{
      show: false,
+     selected: null
+   },
+   calculateListModal:{
+     show: true,
      selected: null
    }
 };
@@ -205,6 +202,10 @@ export const globalSlice = createSlice({
       }
       state.editlistModal.show = false;
       state.editlistModal.selected = null;
+    },
+    setCalculateListModal: (state, action) => {
+      state.calculateListModal.show = action.payload.show ?? false;
+      state.calculateListModal.selected = action.payload.selected;
     }
   },
 });
@@ -224,7 +225,8 @@ export const { setDeleteDialog,
   deleteListItem,
   addListItem,
   editListItem,
-  setEditListModal
+  setEditListModal,
+  setCalculateListModal
  } = globalSlice.actions;
 
 export const showDeleteDialog = (state) => state.global.deleteDialogProps.show;
@@ -235,6 +237,9 @@ export const showEditProductModal = (state) => state.global.editProductModal;
 export const showCreateProductModal = (state) => state.global.showCreateProductModal;
 export const showCreatelistModal = (state) => state.global.createlistModal;
 export const showEditlistModal = (state) => state.global.editlistModal;
+
+export const showCalculateListModal = (state) => state.global.calculateListModal;
+
 
 
 export const showCreteVariantModal = (state) => state.global.creteVariantModal;
