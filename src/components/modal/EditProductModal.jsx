@@ -80,7 +80,9 @@ export default function EditProductModal() {
                     <Button aria-label="delete" size="small" onClick={handleClose}>
                         Vazgeç
                     </Button >
-                    <Button aria-label="delete" variant="outlined" size="small" color="success" onClick={update}>
+                    <Button 
+                    disabled={ value.length == 0 }
+                    aria-label="delete" variant="outlined" size="small" color="success" onClick={update}>
                         Güncelle
                     </Button >
                 </ButtonGroup>

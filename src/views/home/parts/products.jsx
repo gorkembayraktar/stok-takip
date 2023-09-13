@@ -65,7 +65,7 @@ function Products(){
             }))
         )
         
-    },[search]);
+    },[search, products]);
 
     const openCreateProductModal = () => {
         setCreateProductModal(true)

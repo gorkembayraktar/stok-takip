@@ -185,7 +185,9 @@ export default function CreateListModal() {
                   value={listName}
                   sx={{mr:2}}
               />
-            <Button autoFocus color="success" variant="contained" onClick={ handleEdit }>
+            <Button 
+            disabled={products.filter((p) => p.variants.some(k => k.checked)).length == 0 || listName.length == 0}
+            autoFocus color="success" variant="contained" onClick={ handleEdit }>
               Güncelle
             </Button>
           </Toolbar>
