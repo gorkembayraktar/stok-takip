@@ -145,7 +145,7 @@ export default function CreateListModal() {
            variants: product.variants.map(variant => ({
             ...variant, 
             checked: !!selected.items.find(i => i.product.id == product.id && i.variants.some(v => v.id == variant.id)) ?? false, 
-            total: selected.items.find(i => i.product.id == product.id)?.variants.find(v => v.id === variant.id)?.total ?? 0
+            total: selected.items.find(i => i.product.id == product.id)?.variants.find(v => v.id === variant.id)?.total ?? 1
           }))
          }))
        );

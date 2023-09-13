@@ -16,6 +16,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
+import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
@@ -61,6 +62,7 @@ export default function CalculateListModal() {
   const [tempList, setTempList] = React.useState([]);
  
   
+  const [enableSubmit, setEnableSubmit] = React.useState(false);
   const [calculatedData, setCaculatedData] = React.useState([]);
   
   const handleClose = () => {
@@ -80,6 +82,50 @@ export default function CalculateListModal() {
     )
   }
 
+  const handleSuggestion = () =>{
+        if(calculatedData.length == 0) return;
+
+        const max = Math.floor(
+             Math.min(...calculatedData.map(c => Math.min(...c.variants.map(v => v.total > 0 ? v.stock / v.total : 0))))
+        );
+            
+      /*
+        rec.forEach((c, i) =>{
+
+            const x = c.variants.map(v => {
+                v.max =  Math.floor(v.total > 0 ? v.stock / v.total : 0)
+                return v;
+            })
+            
+            const max = x.reduce(function(prev, current) {
+                return (prev.max < current.max) ? prev : current
+            }) 
+
+            if(i - 1 >= 0){
+
+                rec[ i - 1 ].variants = rec[ i - 1 ].variants.map(k =>{
+                    k.stock -= max 
+                    return k;
+                });
+
+            }
+            
+
+
+        });
+     
+        */
+       
+        setTempList(
+            tempList.map(t => {
+                t.total = max;
+                return t;
+            })
+        )
+
+       
+  }
+
   React.useEffect(()=>{
     if(selected && selected.length ){
         setTempList(
@@ -89,8 +135,6 @@ export default function CalculateListModal() {
                 total: 0
             }))
         )
-      
-        
     }
   }, [selected])
 
@@ -108,7 +152,7 @@ export default function CalculateListModal() {
                     if(f = tempList.find(t => t.id == i.id)){
                         return {
                             ...v,
-                            total : v.total * f.total
+                            result : v.total * f.total
                         }
                     }
                     return v;
@@ -125,17 +169,27 @@ export default function CalculateListModal() {
             })
            
         });
+
         Object.keys(data).forEach(key => {
-            data[key].variants = data[key].variants.getSumDuplicateData('id', 'total').map((withStock)=>{
+            data[key].variants = data[key].variants.getSumDuplicateData('id', ['result', 'total']).map((withStock)=>{
                 withStock.stock = products.find(k => k.id == data[key].product.id)?.variants.find(v => v.id == withStock.id)?.stock;
                 return withStock;
             })
         }); 
-        setCaculatedData(Object.values(data))
+        const values = Object.values(data);
+        setCaculatedData(values)
 
+        setEnableSubmit( 
+            values.every(i => i.variants.every(k => k.stock >= k.result && k.result > 0 ))
+            &&
+            tempList.every(k => k.total > 0)    
+        )
+   
+     
     }
    
   }, [tempList])
+
 
 
   return (
@@ -159,8 +213,10 @@ export default function CalculateListModal() {
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               Hesaplamalar
             </Typography>
-            <Button autoFocus color="success" variant="contained">
-              DİSABLE
+            <Button 
+            disabled={!enableSubmit}
+            autoFocus color="success" variant="contained">
+              İşlemleri Onayla
             </Button>
           </Toolbar>
         </AppBar>
@@ -175,7 +231,7 @@ export default function CalculateListModal() {
                 }
             </Grid>
             <Grid item md={4} xs={12}>
-                <CustomizeListInput tempList={tempList} setTempListTotal={setTempListTotal} />
+                <CustomizeListInput tempList={tempList} setTempListTotal={setTempListTotal} handleSuggestion={handleSuggestion}/>
             </Grid>
             <Grid item md={4} xs={12}>
                 <CustomizeListCalculate calculatedData={calculatedData} />
@@ -273,7 +329,7 @@ const CustomizeListItem = ({item}) => {
     </>
 }
 
-function CustomizeListInput({tempList, setTempListTotal}){
+function CustomizeListInput({tempList, setTempListTotal, handleSuggestion}){
     return <>
         <Item sx={{mb:2}}>
             <List
@@ -283,6 +339,14 @@ function CustomizeListInput({tempList, setTempListTotal}){
                 subheader={
                     <ListSubheader component="div" id="nested-list-subheader" sx={{ fontWeight: 'bold', textAlign:'left'}}>
                         Liste Adet Sayısı
+                        <Button 
+                         color="info" 
+                         size="small"
+                         sx={{float: 'right', m: 1}}
+                         onClick={ handleSuggestion }
+                         variant="outlined">
+                            Önerilen Liste
+                        </Button>
                     </ListSubheader>
                 }
                 >
@@ -314,6 +378,7 @@ function CustomizeListInputItem({item, setTempListTotal}){
                         id={`input-total-${0}`}
                         label="Adet"
                         size="small"
+                        type="number"
                         value={item.total}
                         sx={{maxWidth:80}}
                         onChange={(e) => setTempListTotal(item.id, e.target.value)}
@@ -375,6 +440,25 @@ function CustomizeListCalculateItem({data}){
     };
 
 
+    const StatusIcon = ({variant}) => {
+    
+        if(variant.result == 0){
+            return (<IconButton size="small" color="info" >
+                            <RemoveIcon />
+                </IconButton>)
+        }
+        else if( variant.result > variant.stock ){
+            return (<IconButton size="small" color="error" >
+                    <ErrorIcon />
+            </IconButton>)
+        }else{
+            return <IconButton size="small" color="success" >
+                    <DoneIcon />
+            </IconButton>
+        }
+    }
+
+
     return <>
       <ListItem dense >
                
@@ -404,24 +488,13 @@ function CustomizeListCalculateItem({data}){
                         data.variants.map((variant, i) => (
                             <ListItemButton sx={{ pl: 4 }}>
                                 <ListItemIcon>
-                                    {
-                                        variant.total > variant.stock ?
-                                        <IconButton size="small" color="error" >
-                                            <ErrorIcon />
-                                        </IconButton>
-                                        :
-                                        <IconButton size="small" color="success" >
-                                            <DoneIcon />
-                                        </IconButton>
-                                    }
-                                   
-                                 
+                                    <StatusIcon variant={variant}/>
                                 </ListItemIcon>
                                 <ListItemText primary={ `(Stok: ${variant.stock}) ${variant.title}` } />
                                 {
-                                    variant.total > variant.stock ? 
-                                    <Chip label={`${variant.total - variant.stock} adet ihtiyaç var`} />:
-                                    <Chip label={`Harcanacak: ${variant.total}`} />
+                                    variant.result > variant.stock ? 
+                                    <Chip label={`${variant.result - variant.stock} adet ihtiyaç var`} />:
+                                    <Chip label={`Düşürülecek miktar: ${variant.result}`} />
                                 }
                              
                             </ListItemButton>

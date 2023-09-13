@@ -1,11 +1,17 @@
 Array.prototype.getSumDuplicateData = function(key, sumKey){
+   // if(!(sumKey instanceof Array)) sumKey = [sumKey];
     const result = [];
     this.forEach(function(a){
         if (!this[ a[ key ] ]) {
-            this[ a[ key ] ] = { ...a, [sumKey]: 0 };
+            this[ a[ key ] ] = { ...a };
+            sumKey.forEach(sk =>{
+                this [a [key] ][sk] = 0;
+            });
             result.push(this[a[ key ]]);
         }
-        this[a[ key ]][sumKey] += a[sumKey];
+        sumKey.forEach(sk =>{
+            this[a[ key ]][sk] += a[sk];
+        });
     }, Object.create(null));
     return result;
 }
