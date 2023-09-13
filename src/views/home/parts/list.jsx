@@ -30,6 +30,7 @@ import CalculateIcon from '@mui/icons-material/Calculate';
 import { useSelector } from 'react-redux';
 
 import {
+    setCalculateListModal,
     setCreatelistModal,
     setDeleteDialog,
     setEditListModal
@@ -76,6 +77,12 @@ function ListViewContainer(){
     }
     const openCalculateModal = () => {
         
+        if(list.length == 0) return;
+
+        setCalculateListModal({
+            show:true,
+            selected: [...list]
+        })
     }
     const deleteGroup = (id) => {
         setDeleteDialog({

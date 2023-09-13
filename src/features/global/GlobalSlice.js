@@ -70,7 +70,7 @@ const initialState = {
      selected: null
    },
    calculateListModal:{
-     show: true,
+     show: false,
      selected: null
    }
 };

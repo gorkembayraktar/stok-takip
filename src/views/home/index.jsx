@@ -17,6 +17,8 @@ import EditVariantModal from '../../components/modal/EditVariantModal'
 import CreateListModal from '../../components/modal/CreateListModal'
 import EditListModal from '../../components/modal/EditListModal'
 
+import CalculateListModal from '../../components/modal/CalculateListModal'
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -53,6 +55,8 @@ function Home() {
         <EditVariantModal />
         <CreateListModal /> 
         <EditListModal />
+
+        <CalculateListModal />
     </Container>
   );
 }
