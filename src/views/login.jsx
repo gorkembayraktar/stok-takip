@@ -49,23 +49,36 @@ export default function Login() {
     const [password, setPassword] = React.useState("");
     const [error, setError] = React.useState("");
 
+    const [sending, setSending] = React.useState(false);
+
     if(user){
         return <Navigate to='/' />
     }
     const loginHandle = async () => {
-
-        login(username, password)
-        .then(data => {
-            // başarılı ise
-            loginStore({
-                ...data.data.user,
-                token: data.data.token
+            setError('');
+            setSending(true);
+            login(username, password)
+            .then(data => {
+                // başarılı ise
+                loginStore({
+                    ...data.data.user,
+                    token: data.data.token
+                })
+                navigate('/');
+            }).catch(data => {
+                // başarısız ise
+                if(data.response && data.response.data){
+                    setError(data.response.data.data.error);
+                }else if(data.code == 'ERR_NETWORK'){
+                    setError('Sunucu bağlantı hatası');
+                }else{
+                    setError('Bir sorun oluştu');
+                }
+            }).finally(() => {
+                setSending(false);
             })
-            navigate('/');
-        }).catch(data => {
-            // başarısız ise
-            setError(data.response.data.data.error);
-        });
+      
+       
 
     }
 
@@ -113,7 +126,9 @@ export default function Login() {
             }
             />
         </FormControl>
-        <Button variant="outlined" onClick={loginHandle}>Giriş Yap</Button>
+        <Button variant="outlined" onClick={loginHandle} disabled={sending}>
+            { sending ? 'Bekleniyor..' : 'Giriş yap'}
+        </Button>
 
         </Box>
         </Item>
