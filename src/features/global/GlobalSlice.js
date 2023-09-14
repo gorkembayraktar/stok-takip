@@ -1,8 +1,9 @@
 import {  createSlice } from '@reduxjs/toolkit';
 
+
 const initialState = {
    products:[
-      {
+     /* {
         id: 1,
         title: 'Ürün Adı 1',
         variants: [...Array(24)].map( (k,i) =>({
@@ -14,7 +15,7 @@ const initialState = {
         id: 2,
         title: 'Ürün Adı 2',
         variants: []
-      }
+      }*/
    ],
    list:[
       {
@@ -80,6 +81,9 @@ export const globalSlice = createSlice({
   name: 'global',
   initialState,
   reducers: {
+    setProductsInit: (state, action) => {
+      state.products = action.payload;
+    },
     showDeleteDialog: (state, action) => {
       const {title, message, selected, method } = action.payload;
       state.deleteDialogProps = {
@@ -179,6 +183,7 @@ export const globalSlice = createSlice({
       state.deleteDialogProps.show = false;
     },
     addListItem: (state, action) => {
+      console.log(action.payload.items)
       state.list = [
         ...state.list,
         {
@@ -210,7 +215,9 @@ export const globalSlice = createSlice({
   },
 });
 
-export const { setDeleteDialog, 
+export const { 
+  setProductsInit,
+  setDeleteDialog, 
   deleteDialogHandle, 
   setCreateProductModal, 
   addProductItem,
@@ -228,6 +235,8 @@ export const { setDeleteDialog,
   setEditListModal,
   setCalculateListModal
  } = globalSlice.actions;
+
+
 
 export const showDeleteDialog = (state) => state.global.deleteDialogProps.show;
 export const deleteDialogProps = (state) => state.global.deleteDialogProps;

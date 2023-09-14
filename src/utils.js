@@ -18,8 +18,26 @@ import {
     addListItem as addListItemFunc,
     editListItem as editListItemFunc,
     setEditListModal as setEditListModalFunc,
-    setCalculateListModal as setCalculateListModalFunc
+    setCalculateListModal as setCalculateListModalFunc,
+    setProductsInit as setProductsInitFunc
 } from './features/global/GlobalSlice'
+
+import {
+    login as loginFunc,
+    logout as logoutFunc
+} from './features/auth/AuthSlice'
+
+
+export const login = ( state ) => {
+    return store.dispatch( loginFunc( state ) );
+}
+export const logout = () => {
+    return store.dispatch( logoutFunc( ) );
+}
+
+export const setProductsInit = (state) => {
+    return store.dispatch( setProductsInitFunc(state) );
+}
 
 export const setDeleteDialog = ( state ) => {
     store.dispatch( SDD( state ) );

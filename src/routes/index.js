@@ -1,4 +1,5 @@
 import Home from '../views/home'
+import Login from '../views/login'
 
 import {
     Navigate 
@@ -9,7 +10,14 @@ export const routes = [
         path:'/',
         element:<Home/>,
         exact:true,
-        auth:false
+        auth:true
+    },
+    {
+        path:'/login',
+        element:<Login />,
+        exact:true,
+        auth:false,
+        withoutSection:true
     },
     {
         //404 page navigate to main page

@@ -11,6 +11,8 @@ import Header from './views/layout/Header'
 import Footer from './views/layout/Footer'
 import { routes } from './routes'
 
+import {ProtectedRoute} from './components/protectedRoute' 
+
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -75,15 +77,30 @@ function App() {
       <Box>
      
   
-        <Header />
+        
         <Routes>
           {
             routes.map(route =>(
-              <Route key={route.path} path={route.path} element={route.element}  exact={route.exact}/>
+              <Route key={route.path} path={route.path} element={
+               
+                  <ProtectedRoute enable={route.auth}>
+                    {
+                        route.withoutSection ? 
+                          route.element 
+                        :  
+                        <>
+                        <Header />
+                        {route.element}
+                        <Footer />
+                        </>
+                    }
+                   
+                  </ProtectedRoute>
+              }  exact={route.exact}/>
             ))
           }
-        </Routes>
-        <Footer />
+      </Routes>
+      
         </Box>
         
       </BrowserRouter>

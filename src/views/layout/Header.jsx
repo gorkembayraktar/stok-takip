@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useState}  from 'react';
 
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate, useNavigation } from 'react-router-dom';
 
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -15,15 +15,24 @@ import {
     selectTheme
   } from '../../features/theme/ThemeSlice'
 
-
 import styled from '@emotion/styled';
 
 import { useTranslation } from 'react-i18next';
+import { Button } from '@mui/material';
 
+
+import { logout } from '../../utils'
 
 
 
 const Header = () =>{
+
+  const navigate = useNavigate();
+
+  const logoutHandle = () => {
+    logout();
+    navigate('/login');
+  }
 
   const mode = 'dark';
 
@@ -31,7 +40,7 @@ const Header = () =>{
       <>
           <AppBar position="static" style={{ background: mode === 'dark' ? 'rgb(38 38 39)' : '#2E3B55' }}>
               <Container >
-                  <Toolbar disableGutters>   
+                  <Toolbar disableGutters sx={{ justifyContent:'space-between'  }}>   
                   <Typography
                       variant="h6"
                       noWrap
@@ -40,7 +49,7 @@ const Header = () =>{
                       sx={{
                       mr: 2,
                       ml:1,
-                      display: {  md: 'flex' },
+                      display: {  md: 'flex',},
                       fontFamily: 'monospace',
                       fontWeight: 700,
                       color: 'inherit',
@@ -50,10 +59,9 @@ const Header = () =>{
                       Stok Takip
                   </Typography>
 
-                  <NavLink  style={{color:'inherit',textDecoration:'none',display:'flex', justifyContent:'space-evenly'}}  to={`/`}>
-  
-                  </NavLink>
-
+               
+                   
+                    <Button variant="outlined" color="error" onClick={logoutHandle}>Çıkış yap</Button>
                   </Toolbar>
               </Container>
           </AppBar>

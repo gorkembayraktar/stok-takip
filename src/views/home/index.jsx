@@ -19,6 +19,13 @@ import EditListModal from '../../components/modal/EditListModal'
 
 import CalculateListModal from '../../components/modal/CalculateListModal'
 
+import {
+  setProductsInit
+} from '../../utils'
+import React from 'react';
+
+import {getProducts} from '../../api'
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -28,7 +35,16 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
+
+
+
 function Home() {
+  React.useEffect(() => {
+
+      getProducts().then(data => {
+        setProductsInit(data.data)
+      });
+  },[]);
 
   return (
     <Container sx={{ pt:3 }}  style={{minHeight:"80vh"}} dark>
