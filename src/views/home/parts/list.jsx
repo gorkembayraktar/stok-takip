@@ -38,6 +38,7 @@ import {
 
 import {
     getList,
+    showCalculateListModal
   } from '../../../features/global/GlobalSlice'
 
 import Paper from '@mui/material/Paper';
@@ -47,6 +48,9 @@ import Paper from '@mui/material/Paper';
 const ITEM_HEIGHT = 48;
 
 function ListViewContainer(){
+
+    const {selected:calculateSelected} = useSelector(showCalculateListModal);
+
     const listStore = useSelector(getList)
 
     const [list, setList] = React.useState([]);
@@ -61,6 +65,16 @@ function ListViewContainer(){
             )
         }
     },[listStore])
+
+    React.useEffect(()=>{
+        if(list && list.length > 0){
+            setList(
+                list.map(k =>({...k, selected: false}) )
+            );
+        }
+    },[calculateSelected])
+
+    
 
     const setSelected = (item) => {
         console.log()

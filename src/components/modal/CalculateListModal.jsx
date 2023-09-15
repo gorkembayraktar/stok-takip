@@ -27,10 +27,16 @@ import {
 } from '../../features/global/GlobalSlice'
 
 import {
-  setCalculateListModal
+  setCalculateListModal,
+  setProductsInit
 } from '../../utils'
 
 import '../../utils/array'
+
+import {
+    calculate,
+    getProducts as getProductsApi
+} from '../../api'
 
 
 import Chip from '@mui/material/Chip';
@@ -64,6 +70,8 @@ export default function CalculateListModal() {
   
   const [enableSubmit, setEnableSubmit] = React.useState(false);
   const [calculatedData, setCaculatedData] = React.useState([]);
+
+  const [submiting, setSubmiting] = React.useState(false);
   
   const handleClose = () => {
     setCalculateListModal({show: false});
@@ -80,6 +88,26 @@ export default function CalculateListModal() {
     setTempList(
        newData 
     )
+  }
+
+  const confirm = () => {
+        if(!tempList.length) return;
+
+        setSubmiting(true)
+
+        calculate(
+            tempList.map((i) => ({id:i.id, total: i.total}))
+        ).then(async data => {
+            if(data?.status){
+                const p = await getProductsApi();
+                setProductsInit(p.data);
+                setCalculateListModal({selected: null, show: false});
+            }  
+        }).catch(() => {
+
+        }).finally(() => {
+            setSubmiting(false)
+        })
   }
 
   const handleSuggestion = () =>{
@@ -214,9 +242,12 @@ export default function CalculateListModal() {
               Hesaplamalar
             </Typography>
             <Button 
-            disabled={!enableSubmit}
+            disabled={!enableSubmit || submiting}
+            onClick={confirm}
             autoFocus color="success" variant="contained">
-              İşlemleri Onayla
+              {
+                submiting ? 'İşleniyor..' : 'İşlemleri Onayla'
+              }
             </Button>
           </Toolbar>
         </AppBar>

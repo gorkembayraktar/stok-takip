@@ -60,6 +60,10 @@ export const listUpdate= async (id, data) => {
     return axiosInstance.post(`/list/${id}`, data).then(data => data.data).catch(unAuthorizeRedirect);
 }
 
+export const calculate = async (data) => {
+    return axiosInstance.post(`/calculate`, data).then(data => data.data).catch(unAuthorizeRedirect);
+}
+
 export const unAuthorizeRedirect = (error) => {
     if(error?.response?.status == 401){
         logout();
