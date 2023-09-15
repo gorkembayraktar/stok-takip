@@ -23,6 +23,9 @@ import {
   listDelete
 } from '../../api'
 
+import {
+  refreshListTable
+} from '../../api/utils'
 
 
 export default function DeleteDialog(){
@@ -37,6 +40,7 @@ export default function DeleteDialog(){
       productDelete(id).then(d => {
         if(d?.status){
           deleteDialogHandle(id)
+          refreshListTable();
         }
       }).catch(() =>{
         handleClose();
@@ -46,6 +50,7 @@ export default function DeleteDialog(){
     const deleteVariant = ({product_id, id}) => {
       variantDelete(id).then(() =>{
         deleteVariantHandle({product_id, id })
+        refreshListTable();
       }).catch(() =>{
 
       })
@@ -55,6 +60,7 @@ export default function DeleteDialog(){
 
       listDelete(id).then(() =>{
         deleteListItem({id})
+        refreshListTable();
       }).catch(() =>{
 
       })

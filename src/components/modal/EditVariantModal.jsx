@@ -22,6 +22,11 @@ import {
     variantUpdate
 } from '../../api'
 
+import {
+    refreshListTable
+} from '../../api/utils'
+
+
 
 const style = {
   position: 'absolute',
@@ -59,6 +64,7 @@ export default function CreateProductModal() {
                 handleClose();
                 setValue("");
                 setStock(0);
+                refreshListTable();
             }
         }).catch(() => {
             

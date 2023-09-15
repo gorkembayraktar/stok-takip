@@ -20,6 +20,12 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
+
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
+
+
 import { useSelector } from 'react-redux';
 import {
   getProducts,
@@ -38,10 +44,11 @@ import {
     getProducts as getProductsApi
 } from '../../api'
 
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
-import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
+const MySwal = withReactContent(Swal)
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -102,6 +109,10 @@ export default function CalculateListModal() {
                 const p = await getProductsApi();
                 setProductsInit(p.data);
                 setCalculateListModal({selected: null, show: false});
+                MySwal.fire({
+                    title: 'İşlem başarılı',
+                    icon: 'success',
+                  });
             }  
         }).catch(() => {
 

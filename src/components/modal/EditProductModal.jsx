@@ -21,6 +21,10 @@ import {
     productUpdate
 } from '../../api'
 
+import {
+    refreshListTable
+} from '../../api/utils'
+
 
 const style = {
   position: 'absolute',
@@ -55,6 +59,7 @@ export default function EditProductModal() {
                     id: selected.id,
                     title: value
                 });
+                refreshListTable();
             }
         }).catch(() => {
             
