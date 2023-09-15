@@ -30,6 +30,9 @@ import {
   addListItem
 } from '../../utils'
 
+import {
+  listCreate
+} from '../../api'
 
 
 import Chip from '@mui/material/Chip';
@@ -75,7 +78,7 @@ export default function CreateListModal() {
     if(listName.length == 0) return;
     if(products.filter((p) => p.variants.some(k => k.checked)).length == 0) return;
 
-    addListItem({
+    listCreate({
       title: listName,
       items: products.filter((p) => p.variants.some(k => k.checked))
              .map(item =>(
@@ -87,11 +90,18 @@ export default function CreateListModal() {
                 variants: item.variants.filter(v => v.checked).map(k => ({id: k.id, title: k.title, total: k.total}))
               }
         ))
+    }).then(data =>{
+      if(data?.status){
+        addListItem(data.data)
+        initData();
+        setListName('')
+      }
+     
+    }).catch(() => {
+
     })
 
-    initData();
-    setListName('')
-   
+
   }
 
   const handleDelete = (parent_id, id) => {

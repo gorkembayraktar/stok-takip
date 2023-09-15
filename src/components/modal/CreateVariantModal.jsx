@@ -18,6 +18,9 @@ import {
     addVariantItem
 } from '../../utils'
 
+import{
+    variantCreate
+} from '../../api'
 
 const style = {
   position: 'absolute',
@@ -43,14 +46,20 @@ export default function CreateProductModal() {
 
     
     const create = () => {
-        addVariantItem({
+
+        variantCreate({
             title: value,
             stock: parseInt(stock),
-            id: selected.id
-        });
-        handleClose();
-        setValue("");
-        setStock(0);
+            product_id: selected.id
+        }).then(d => {
+            if(d?.status){
+                addVariantItem(d.data);
+                handleClose();
+                setValue("");
+                setStock(0);
+            }
+        })
+       
     }
 
     return (

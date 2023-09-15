@@ -3,6 +3,7 @@ import {
   BrowserRouter,
   Routes,
   Route,
+  useNavigate,
 } from "react-router-dom";
 
 import './App.css';
@@ -23,7 +24,12 @@ import {
   selectTheme
 } from './features/theme/ThemeSlice'
 
+import History from './history'
+import NavigateSetter from './NavigateSetter'
+
 function App() {
+
+    History.navigate = useNavigate()
 
    //const mode = useSelector(selectTheme);
 
@@ -73,9 +79,9 @@ function App() {
   return (
      <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
+  
       <Box>
-     
+        <NavigateSetter />
   
         
         <Routes>
@@ -103,7 +109,7 @@ function App() {
       
         </Box>
         
-      </BrowserRouter>
+
     </ThemeProvider>
   );
 }

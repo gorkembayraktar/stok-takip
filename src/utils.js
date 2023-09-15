@@ -19,7 +19,8 @@ import {
     editListItem as editListItemFunc,
     setEditListModal as setEditListModalFunc,
     setCalculateListModal as setCalculateListModalFunc,
-    setProductsInit as setProductsInitFunc
+    setProductsInit as setProductsInitFunc,
+    setListInit as setListInitFunc
 } from './features/global/GlobalSlice'
 
 import {
@@ -38,6 +39,10 @@ export const logout = () => {
 export const setProductsInit = (state) => {
     return store.dispatch( setProductsInitFunc(state) );
 }
+export const setListInit = (state) => {
+    return store.dispatch( setListInitFunc(state) );
+}
+
 
 export const setDeleteDialog = ( state ) => {
     store.dispatch( SDD( state ) );

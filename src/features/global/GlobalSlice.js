@@ -2,47 +2,8 @@ import {  createSlice } from '@reduxjs/toolkit';
 
 
 const initialState = {
-   products:[
-     /* {
-        id: 1,
-        title: 'Ürün Adı 1',
-        variants: [...Array(24)].map( (k,i) =>({
-            id: 101  +i ,
-            title: 'Variant ' + (i+1),
-            stock: Math.ceil(Math.random() * 50)
-          })),
-      },{
-        id: 2,
-        title: 'Ürün Adı 2',
-        variants: []
-      }*/
-   ],
-   list:[
-      {
-        id:1,
-        title: 'Liste 1',
-        items: [
-          {
-            product:{
-              id: 1,
-              title: 'Ürün Adı 1',
-            },
-            variants:[
-              {
-                id: 101,
-                title: 'Variant 1',
-                total: 2
-              },
-              {
-                id: 102,
-                title: 'Variant 2',
-                total: 3
-              }
-            ]
-          }
-        ]
-      }
-   ],
+   products:[],
+   list:[ ],
    deleteDialogProps:{
       show: false,
       title: '',
@@ -84,6 +45,9 @@ export const globalSlice = createSlice({
     setProductsInit: (state, action) => {
       state.products = action.payload;
     },
+    setListInit: (state, action) =>{
+      state.list = action.payload;
+    },
     showDeleteDialog: (state, action) => {
       const {title, message, selected, method } = action.payload;
       state.deleteDialogProps = {
@@ -112,11 +76,7 @@ export const globalSlice = createSlice({
   
       state.products = [
         ...state.products,
-        {
-          id: Date.now(),
-          title: action.payload.title,
-          variants: []        
-        }
+        action.payload
       ];
       
       state.showCreateProductModal = false;
@@ -148,16 +108,12 @@ export const globalSlice = createSlice({
       state.creteVariantModal.selected = action.payload.selected;
     },
     addVariantItem: (state, action) => {
-      const item = state.products.find( p => p.id == action.payload.id );
+      const item = state.products.find( p => p.id == action.payload.product_id );
       if(item){
          if(!item.variants) item.variants = [];
          item.variants = [
             ...item.variants,
-            {
-              id: Date.now(),
-              title: action.payload.title,
-              stock: action.payload.stock
-            }
+            action.payload
          ];
       }
     },
@@ -186,11 +142,7 @@ export const globalSlice = createSlice({
       console.log(action.payload.items)
       state.list = [
         ...state.list,
-        {
-          id:Date.now(),
-          title: action.payload.title,
-          items: action.payload.items
-        }
+        action.payload
       ];
       state.createlistModal.show = false;
     },
@@ -233,7 +185,8 @@ export const {
   addListItem,
   editListItem,
   setEditListModal,
-  setCalculateListModal
+  setCalculateListModal,
+  setListInit
  } = globalSlice.actions;
 
 

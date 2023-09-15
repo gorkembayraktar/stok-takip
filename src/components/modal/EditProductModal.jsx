@@ -17,6 +17,9 @@ import {
     setEditProductModal,
     editProductItem
 } from '../../utils'
+import {
+    productUpdate
+} from '../../api'
 
 
 const style = {
@@ -44,11 +47,22 @@ export default function EditProductModal() {
     const handleClose = () => setEditProductModal({show: false});
 
     const update = () => {
-        editProductItem({
-            id: selected.id,
-            title: value
-        });
-        handleClose();
+
+        productUpdate(selected.id, value)
+        .then(data => {
+            if(data?.status){
+                editProductItem({
+                    id: selected.id,
+                    title: value
+                });
+            }
+        }).catch(() => {
+            
+        }).finally(() => {
+            handleClose();
+        })
+      
+        
     }
 
     if(!selected) return;

@@ -17,6 +17,13 @@ import {
   deleteListItem
 } from '../../utils'
 
+import {
+  productDelete,
+  variantDelete,
+  listDelete
+} from '../../api'
+
+
 
 export default function DeleteDialog(){
     const {show:open, message, title, selected, method} = useSelector(deleteDialogProps)
@@ -26,13 +33,40 @@ export default function DeleteDialog(){
       setDeleteDialog({show: false});
     };
 
+    const deleteDialog = (id) => {
+      productDelete(id).then(d => {
+        if(d?.status){
+          deleteDialogHandle(id)
+        }
+      }).catch(() =>{
+        handleClose();
+      })
+    }
 
+    const deleteVariant = ({product_id, id}) => {
+      variantDelete(id).then(() =>{
+        deleteVariantHandle({product_id, id })
+      }).catch(() =>{
+
+      })
+    }
+
+    const deleteList = (id) => {
+
+      listDelete(id).then(() =>{
+        deleteListItem({id})
+      }).catch(() =>{
+
+      })
+    }
+
+    
 
     const switchMethod = () => {
       switch( method ){
         case 'product':
           return (
-            <Button onClick={() => deleteDialogHandle( selected.id ) } autoFocus>
+            <Button onClick={() => deleteDialog( selected.id ) } autoFocus>
               Sil
             </Button>
           );
@@ -40,14 +74,14 @@ export default function DeleteDialog(){
 
         case 'variant':
           return (
-            <Button onClick={() => deleteVariantHandle( {product_id: selected.product_id, id: selected.id }) } autoFocus>
+            <Button onClick={() => deleteVariant( {product_id: selected.product_id, id: selected.id }) } autoFocus>
               Sil
             </Button>
           );
         
         case 'list':
           return (
-            <Button onClick={() => deleteListItem({id: selected.id}) } autoFocus>
+            <Button onClick={() => deleteList(selected.id) } autoFocus>
               Sil
             </Button>
           )

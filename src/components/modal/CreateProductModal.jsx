@@ -18,6 +18,8 @@ import {
     addProductItem
 } from '../../utils'
 
+import {productCreate} from '../../api'
+
 
 const style = {
   position: 'absolute',
@@ -40,10 +42,14 @@ export default function CreateProductModal() {
 
     const create = () => {
     
-        addProductItem({
-            title: value
-        });
-        setValue("");
+        productCreate(value)
+        .then(data => {
+            if(data?.status){
+                addProductItem(data.data);
+                setValue("");
+            }
+        })
+       
     }
 
     return (

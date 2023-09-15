@@ -18,6 +18,10 @@ import {
     editVariantItem
 } from '../../utils'
 
+import {
+    variantUpdate
+} from '../../api'
+
 
 const style = {
   position: 'absolute',
@@ -39,15 +43,27 @@ export default function CreateProductModal() {
     const handleClose = () => setEditVariantModal({show: false});
 
     const update = () => {
-        editVariantItem({
+
+        variantUpdate({
             title: value,
             stock: parseInt(stock),
-            product_id: selected.product_id,
             id: selected.id
-        });
-        handleClose();
-        setValue("");
-        setStock(0);
+        }).then(data =>{
+            if(data?.status){
+                editVariantItem({
+                    title: value,
+                    stock: parseInt(stock),
+                    product_id: selected.product_id,
+                    id: selected.id
+                });
+                handleClose();
+                setValue("");
+                setStock(0);
+            }
+        }).catch(() => {
+            
+        })
+        
     }
 
     React.useEffect(()=>{

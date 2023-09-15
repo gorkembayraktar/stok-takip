@@ -25,7 +25,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Alert, AlertTitle, Box, Divider, Grid } from '@mui/material';
+import { Alert, AlertTitle, Box, Divider, Grid, Tooltip } from '@mui/material';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import { useSelector } from 'react-redux';
 
@@ -76,12 +76,12 @@ function ListViewContainer(){
         setCreatelistModal({show: true});
     }
     const openCalculateModal = () => {
-        
         if(list.length == 0) return;
+        if( !list.some(i => i.selected) ) return;
 
         setCalculateListModal({
             show:true,
-            selected: [...list]
+            selected: list.filter(l => l.selected)
         })
     }
     const deleteGroup = (id) => {
@@ -112,13 +112,13 @@ function ListViewContainer(){
             aria-labelledby="nested-list-subheader"
             subheader={
                 <ListSubheader component="div" id="nested-list-subheader" sx={{ fontWeight: 'bold'}}>
-                    {
-                      list.some(i => i.selected) &&
-                        <IconButton edge="start" aria-label="calculate" sx={{ float: 'left'}} onClick={openCalculateModal}>
-                            <CalculateIcon />
+                    <Tooltip id="button-report" title="En az 1 liste seçiniz">
+                        <IconButton edge="start" aria-label="calculate" sx={{ float: 'left'}} 
+                       
+                        onClick={openCalculateModal}> 
+                                <CalculateIcon />
                         </IconButton>
-                    }
-                   
+                    </Tooltip>
                    Listeler
                    <IconButton edge="end" aria-label="new product" sx={{ float: 'right'}} onClick={openCreateListModal}>
                         <AddIcon />

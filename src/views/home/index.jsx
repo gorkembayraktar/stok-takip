@@ -20,11 +20,14 @@ import EditListModal from '../../components/modal/EditListModal'
 import CalculateListModal from '../../components/modal/CalculateListModal'
 
 import {
-  setProductsInit
+  setProductsInit,
+  setListInit
 } from '../../utils'
 import React from 'react';
 
-import {getProducts} from '../../api'
+import {getProducts, getList} from '../../api'
+
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -42,7 +45,15 @@ function Home() {
   React.useEffect(() => {
 
       getProducts().then(data => {
-        setProductsInit(data.data)
+        if(data){
+          setProductsInit(data.data)
+        }
+      });
+
+      getList().then(data => {
+        if(data){
+          setListInit(data.data);
+        }
       });
   },[]);
 
