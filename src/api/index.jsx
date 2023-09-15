@@ -6,7 +6,7 @@ import History from '../history'
 import {logout} from '../utils'
 
 export const axiosInstance = axios.create({
-    baseURL: "http://localhost/stok-takip/api",
+    baseURL: "https://stoktakip.gorkembayraktar.com/server/api",
     /* other custom settings */
 });
 
